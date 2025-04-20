@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎙️ VoiceBot</title>
+  <style>
+    .container { max-width: 600px; margin: auto; padding: 20px; text-align: center; }
+    .button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    .feature-form { display: none; margin-top: 20px; }
+    .visible { display: block !important; }
+    input[type="text"] { padding: 10px; width: 80%; }
+    ul { list-style-type: disc; padding-left: 20px; text-align: left; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎙️ VoiceBot</h1>
+    <p>Choose a feature to practice:</p>
+    <button onclick="showForm('vocabulary')" class="button">Vocabulary</button>
+    <button onclick="showForm('pronunciation')" class="button">Pronunciation</button>
+    <button onclick="showForm('chat')" class="button">Chat</button>
+
+    <!-- Vocabulary Form -->
+    <div id="vocabulary" class="feature-form {% if active_form == 'vocabulary' %}visible{% endif %}">
+      <h2>Vocabulary</h2>
+      <form method="POST">
+        <input type="text" name="word" placeholder="Enter a word" required>
+        <br><br>
+        <button type="submit" name="vocabulary" class="button">Get Info</button>
+      </form>
+
+      {% if vocab_info %}
+        <div>
+          <h3>Word Info:</h3>
+          <p><strong>Definition:</strong> {{ vocab_info.definition }}</p>
+          <p><strong>Synonyms:</strong> {{ vocab_info.synonyms }}</p>
+          <p><strong>Antonyms:</strong> {{ vocab_info.antonyms }}</p>
+          <p><strong>Example Sentence:</strong> {{ vocab_info.example }}</p>
+        </div>
+      {% else %}
+        <p>No information available for this word.</p>
+      {% endif %}
+    </div>
+
+    <!-- Pronunciation Form -->
+    <div id="pronunciation" class="feature-form {% if active_form == 'pronunciation' %}visible{% endif %}">
+      <h2>Pronunciation</h2>
+      <form method="POST">
+        <input type="text" name="word" placeholder="Enter a word" required>
+        <br><br>
+        <button type="submit" name="pronunciation" class="button">Get Pronunciation</button>
+      </form>
+      {% if phonetic %}
+        <p><strong>Phonetic:</strong> {{ phonetic }}</p>
+        <audio id="pronunciationAudio" controls src="{{ pronunciation_audio }}"></audio>
+        <br><br>
+        <label for="speedControl">Playback Speed:</label>
+        <select id="speedControl">
+          <option value="0.2">0.2x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x (Normal)</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+      {% endif %}
+    </div>
+
+    <!-- Chat Form -->
+    <div id="chat" class="feature-form {% if active_form == 'chat' %}visible{% endif %}">
+      <h2>Chat with Bot</h2>
+      <form method="POST">
+        <input type="text" name="user_input" placeholder="Say something..." required>
+        <br><br>
+        <button type="submit" name="chat" class="button">Send</button>
+      </form>
+    
+      {% if chat_response %}
+        <div style="margin-top: 20px;">
+          <h3>📝 Correction Feedback:</h3>
+          <p><strong>{{ feedback }}</strong></p>
+
+          <div style="background: #ddd; width: 100%; height: 20px; border-radius: 10px; overflow: hidden;">
+            <div style="background: #4CAF50; width: {{ (score * 100)|round(0) }}%; height: 100%;"></div>
+          </div>
+          <p><em>Score: {{ (score * 100)|round(0) }}%</em></p>
+
+          <h4>✅ Corrected Sentence:</h4>
+          <p>{{ chat_response }}</p>
+          <audio controls src="{{ audio_output_path }}"></audio>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function showForm(formId) {
+      const forms = document.querySelectorAll('.feature-form');
+      forms.forEach(form => form.classList.remove('visible'));
+      document.getElementById(formId).classList.add('visible');
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const audio = document.getElementById("pronunciationAudio");
+      const speedSelector = document.getElementById("speedControl");
+
+      if (audio && speedSelector) {
+        speedSelector.addEventListener("change", function () {
+          audio.playbackRate = parseFloat(this.value);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
