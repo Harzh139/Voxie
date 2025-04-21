@@ -2,113 +2,225 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🎙️ VoiceBot</title>
+  <title>🎙️ Voxie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    .container { max-width: 600px; margin: auto; padding: 20px; text-align: center; }
-    .button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    .feature-form { display: none; margin-top: 20px; }
-    .visible { display: block !important; }
-    input[type="text"] { padding: 10px; width: 80%; }
-    ul { list-style-type: disc; padding-left: 20px; text-align: left; display: inline-block; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #ece9e6, #ffffff);
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      text-align: center;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #4A00E0;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: #4A00E0;
+      margin-top: 30px;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .button {
+      margin: 10px;
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      background: linear-gradient(to right, #4A00E0, #8E2DE2);
+      color: white;
+      transition: background 0.3s ease;
+    }
+
+    .button:hover {
+      background: linear-gradient(to right, #8E2DE2, #4A00E0);
+    }
+
+    .feature-form {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .visible {
+      display: block !important;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      text-align: left;
+      display: inline-block;
+    }
+
+    audio {
+      margin-top: 15px;
+    }
+
+    select {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    .progress-bar {
+      background: #ddd;
+      width: 100%;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-fill {
+      background: #4CAF50;
+      height: 100%;
+    }
+
+    .feedback-section {
+      text-align: left;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .feedback-section h3 {
+      color: #333;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🎙️ VoiceBot</h1>
-    <p>Choose a feature to practice:</p>
-    <button onclick="showForm('vocabulary')" class="button">Vocabulary</button>
-    <button onclick="showForm('pronunciation')" class="button">Pronunciation</button>
-    <button onclick="showForm('chat')" class="button">Chat</button>
+<div class="container">
+  <h1>🎙️ Voxie</h1>
+  <p>Choose a feature to practice:</p>
+  <button onclick="showForm('vocabulary')" class="button">Vocabulary</button>
+  <button onclick="showForm('pronunciation')" class="button">Pronunciation</button>
+  <button onclick="showForm('chat')" class="button">Chat</button>
 
-    <!-- Vocabulary Form -->
-    <div id="vocabulary" class="feature-form {% if active_form == 'vocabulary' %}visible{% endif %}">
-      <h2>Vocabulary</h2>
-      <form method="POST">
-        <input type="text" name="word" placeholder="Enter a word" required>
-        <br><br>
-        <button type="submit" name="vocabulary" class="button">Get Info</button>
-      </form>
+  <!-- Vocabulary Form -->
+  <div id="vocabulary" class="feature-form {% if active_form == 'vocabulary' %}visible{% endif %}">
+    <h2>Vocabulary</h2>
+    <form method="POST">
+      <input type="text" name="word" placeholder="Enter a word" required>
+      <br>
+      <button type="submit" name="vocabulary" class="button">Get Info</button>
+    </form>
 
-      {% if vocab_info %}
-        <div>
-          <h3>Word Info:</h3>
-          <p><strong>Definition:</strong> {{ vocab_info.definition }}</p>
-          <p><strong>Synonyms:</strong> {{ vocab_info.synonyms }}</p>
-          <p><strong>Antonyms:</strong> {{ vocab_info.antonyms }}</p>
-          <p><strong>Example Sentence:</strong> {{ vocab_info.example }}</p>
-        </div>
-      {% else %}
-        <p>No information available for this word.</p>
-      {% endif %}
+    {% if vocab_info %}
+    <div class="feedback-section">
+      <h3>Word Info:</h3>
+      <p><strong>Definition:</strong> {{ vocab_info.definition }}</p>
+      <p><strong>Synonyms:</strong> {{ vocab_info.synonyms }}</p>
+      <p><strong>Antonyms:</strong> {{ vocab_info.antonyms }}</p>
+      <p><strong>Example Sentence:</strong> {{ vocab_info.example }}</p>
     </div>
-
-    <!-- Pronunciation Form -->
-    <div id="pronunciation" class="feature-form {% if active_form == 'pronunciation' %}visible{% endif %}">
-      <h2>Pronunciation</h2>
-      <form method="POST">
-        <input type="text" name="word" placeholder="Enter a word" required>
-        <br><br>
-        <button type="submit" name="pronunciation" class="button">Get Pronunciation</button>
-      </form>
-      {% if phonetic %}
-        <p><strong>Phonetic:</strong> {{ phonetic }}</p>
-        <audio id="pronunciationAudio" controls src="{{ pronunciation_audio }}"></audio>
-        <br><br>
-        <label for="speedControl">Playback Speed:</label>
-        <select id="speedControl">
-          <option value="0.2">0.2x</option>
-          <option value="0.5">0.5x</option>
-          <option value="1" selected>1x (Normal)</option>
-          <option value="1.5">1.5x</option>
-          <option value="2">2x</option>
-        </select>
-      {% endif %}
-    </div>
-
-    <!-- Chat Form -->
-    <div id="chat" class="feature-form {% if active_form == 'chat' %}visible{% endif %}">
-      <h2>Chat with Bot</h2>
-      <form method="POST">
-        <input type="text" name="user_input" placeholder="Say something..." required>
-        <br><br>
-        <button type="submit" name="chat" class="button">Send</button>
-      </form>
-    
-      {% if chat_response %}
-        <div style="margin-top: 20px;">
-          <h3>📝 Correction Feedback:</h3>
-          <p><strong>{{ feedback }}</strong></p>
-
-          <div style="background: #ddd; width: 100%; height: 20px; border-radius: 10px; overflow: hidden;">
-            <div style="background: #4CAF50; width: {{ (score * 100)|round(0) }}%; height: 100%;"></div>
-          </div>
-          <p><em>Score: {{ (score * 100)|round(0) }}%</em></p>
-
-          <h4>✅ Corrected Sentence:</h4>
-          <p>{{ chat_response }}</p>
-          <audio controls src="{{ audio_output_path }}"></audio>
-        </div>
-      {% endif %}
-    </div>
+    {% else %}
+    <p>No information available for this word.</p>
+    {% endif %}
   </div>
 
-  <script>
-    function showForm(formId) {
-      const forms = document.querySelectorAll('.feature-form');
-      forms.forEach(form => form.classList.remove('visible'));
-      document.getElementById(formId).classList.add('visible');
+  <!-- Pronunciation Form -->
+  <div id="pronunciation" class="feature-form {% if active_form == 'pronunciation' %}visible{% endif %}">
+    <h2>Pronunciation</h2>
+    <form method="POST">
+      <input type="text" name="word" placeholder="Enter a word" required>
+      <br>
+      <button type="submit" name="pronunciation" class="button">Get Pronunciation</button>
+    </form>
+    {% if phonetic %}
+    <p><strong>Phonetic:</strong> {{ phonetic }}</p>
+    <audio id="pronunciationAudio" controls src="{{ pronunciation_audio }}"></audio>
+    <br>
+    <label for="speedControl">Playback Speed:</label>
+    <select id="speedControl">
+      <option value="0.2">0.2x</option>
+      <option value="0.5">0.5x</option>
+      <option value="1" selected>1x (Normal)</option>
+      <option value="1.5">1.5x</option>
+      <option value="2">2x</option>
+    </select>
+    {% endif %}
+  </div>
+
+  <!-- Chat Form -->
+  <div id="chat" class="feature-form {% if active_form == 'chat' %}visible{% endif %}">
+    <h2>Chat with Bot</h2>
+    <form method="POST">
+      <input type="text" name="user_input" placeholder="Say something..." required>
+      <br>
+      <button type="submit" name="chat" class="button">Send</button>
+    </form>
+
+    {% if chat_response %}
+    <div class="feedback-section">
+      <h3>📝 Correction Feedback:</h3>
+      <p><strong>{{ feedback }}</strong></p>
+
+      <div class="progress-bar">
+        <div class="progress-bar-fill" style="width: {{ (score * 100)|round(0) }}%;"></div>
+      </div>
+      <p><em>Score: {{ (score * 100)|round(0) }}%</em></p>
+
+      <h4>✅ Corrected Sentence:</h4>
+      <p>{{ chat_response }}</p>
+      <audio controls src="{{ audio_output_path }}"></audio>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  function showForm(formId) {
+    const forms = document.querySelectorAll('.feature-form');
+    forms.forEach(form => form.classList.remove('visible'));
+    document.getElementById(formId).classList.add('visible');
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const audio = document.getElementById("pronunciationAudio");
+    const speedSelector = document.getElementById("speedControl");
+
+    if (audio && speedSelector) {
+      speedSelector.addEventListener("change", function () {
+        audio.playbackRate = parseFloat(this.value);
+      });
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      const audio = document.getElementById("pronunciationAudio");
-      const speedSelector = document.getElementById("speedControl");
-
-      if (audio && speedSelector) {
-        speedSelector.addEventListener("change", function () {
-          audio.playbackRate = parseFloat(this.value);
-        });
-      }
-    });
-  </script>
+  });
+</script>
 </body>
 </html>
