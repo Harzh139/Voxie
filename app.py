@@ -56,7 +56,7 @@ def correct_and_analyze(text):
 
     return corrected, analysis
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'wav', 'mp3', 'm4a', 'flac'}
 
@@ -141,4 +141,5 @@ def index():
                                        "chat" if chat_response else "")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)
