@@ -136,7 +136,10 @@
   <div id="vocabulary" class="feature-form {% if active_form == 'vocabulary' %}visible{% endif %}">
     <h2>Vocabulary</h2>
     <form method="POST">
-      <input type="text" name="word" placeholder="Enter a word" required>
+      <input type="text" id="vocabInput" name="word" placeholder="Say or type a word" required>
+      <br>
+      <button type="button" onclick="startRecognition('vocabInput')" class="button">🎤 Start</button>
+      <button type="button" onclick="stopRecognition()" class="button">🛑 Stop</button>
       <br>
       <button type="submit" name="vocabulary" class="button">Get Info</button>
     </form>
@@ -181,7 +184,10 @@
   <div id="chat" class="feature-form {% if active_form == 'chat' %}visible{% endif %}">
     <h2>Chat with Bot</h2>
     <form method="POST">
-      <input type="text" name="user_input" placeholder="Say something..." required>
+      <input type="text" id="chatInput" name="user_input" placeholder="Say something..." required>
+      <br>
+      <button type="button" onclick="startRecognition('chatInput')" class="button">🎤 Start</button>
+      <button type="button" onclick="stopRecognition()" class="button">🛑 Stop</button>
       <br>
       <button type="submit" name="chat" class="button">Send</button>
     </form>
@@ -221,6 +227,45 @@
       });
     }
   });
+
+  let recognition;
+  let targetInput = null;
+
+  function startRecognition(inputId) {
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
+
+    targetInput = document.getElementById(inputId);
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onresult = function (event) {
+      const transcript = event.results[0][0].transcript;
+      // Remove full stop at the end of the transcribed text if it's there
+      const cleanedTranscript = transcript.trim().replace(/[.!?]$/, "");
+      targetInput.value = cleanedTranscript;
+    };
+
+    recognition.onerror = function (event) {
+      console.error("Speech recognition error:", event.error);
+    };
+
+    recognition.onend = function () {
+      console.log("Speech recognition ended.");
+    };
+
+    recognition.start();
+  }
+
+  function stopRecognition() {
+    if (recognition) {
+      recognition.stop();
+    }
+  }
 </script>
 </body>
 </html>
