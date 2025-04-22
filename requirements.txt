@@ -1,0 +1,6 @@
+Flask
+spacy
+torch
+transformers
+gTTS
+SpeechRecognition
