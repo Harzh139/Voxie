@@ -10,4 +10,4 @@ spacy==3.7.2
 blis==0.7.11
 numpy==1.24.4
 pyttsx3
-
+nltk
