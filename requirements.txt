@@ -4,3 +4,6 @@ torch
 transformers
 gTTS
 SpeechRecognition
+spacy==3.2
+numpy
+preshed
