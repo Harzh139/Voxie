@@ -7,5 +7,5 @@ SpeechRecognition
 spacy==3.2
 numpy
 preshed
-gunicorn
+gunicorn==20.1.0
 
